@@ -115,39 +115,35 @@ Essas opções vão para `dist/slides.js`. Dá para editar o `slides.js` direto,
 
 **Som:** o Chrome só libera áudio depois de alguma tecla ou clique na página. Se a apresentação abrir direto numa página com som, o vídeo começa mudo e o som entra na primeira tecla ou clique.
 
-## Versão web (GitHub Pages)
+## Versão web
 
-A cada envio para o branch `main`, o GitHub gera o `dist/` e publica no branch `gh-pages`. O endereço é:
+O player fica publicado em:
 
-https://ghorcades.github.io/my-canva/
+https://canva.claudemembers.com.br
 
-Se o endereço não abrir, ative uma vez em **Settings → Pages → Build and deployment**: Source **Deploy from a branch**, branch **gh-pages**, pasta **/ (root)**.
+Ele roda na VPS Loki, servido pelo Caddy a partir de `/var/www/canva`. Enviar para o GitHub **não** atualiza o site; a publicação é manual.
 
-Para atualizar a versão web, troque os arquivos de `input/` e envie para o GitHub:
-
-```bash
-git add -A
-```
+Para atualizar a versão web, troque os arquivos de `input/` e, na pasta do projeto, rode:
 
 ```bash
-git commit -m "Atualiza slides"
+npm run deploy
 ```
 
-```bash
-git push
-```
+O comando roda `npm run build`, envia `dist/` para a Loki por `rsync` (apagando lá o que não existir mais em `dist/`) e confere se o endereço responde com o `index.html` novo.
+É preciso ter acesso SSH à Loki com a chave `~/.ssh/vps_agente` (alias `loki` no `~/.ssh/config`). Se o alias não conectar, o script tenta pelo nome `canva.claudemembers.com.br`; dá para forçar outro destino com `LOKI_HOST=... npm run deploy`.
 
 Atenção:
 
 - O endereço é público: qualquer pessoa com o link vê os slides que estiverem em `input/`.
-- O GitHub recusa arquivos acima de 100 MB, o que pode acontecer com vídeos longos. Nesse caso, use só a versão local.
+- `index.html`, `slides.js`, `player.js` e `player.css` são servidos sem cache, então uma atualização aparece na hora. As imagens e vídeos de `slides/` ficam até 1 hora em cache no navegador; se uma página antiga continuar aparecendo, recarregue com `Ctrl+Shift+R`.
 
 ## Estrutura
 
 ```
-input/               páginas exportadas do Canva (PNG, MP4 ou ZIP)
-player.config.json   opções do player
-scripts/build.mjs    gera dist/ a partir de input/
-src/player/          código do player (HTML, CSS, JS)
-dist/                resultado do build; é isto que vai para o telão
+input/                  páginas exportadas do Canva (PNG, MP4 ou ZIP)
+player.config.json      opções do player
+scripts/build.mjs       gera dist/ a partir de input/
+scripts/deploy-loki.sh  publica dist/ em canva.claudemembers.com.br (npm run deploy)
+src/player/             código do player (HTML, CSS, JS)
+dist/                   resultado do build; é isto que vai para o telão
 ```

@@ -5,7 +5,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/build.mjs"
+    "build": "node scripts/build.mjs",
+    "deploy": "bash scripts/deploy-loki.sh"
   },
   "engines": {
     "node": ">=18"
