@@ -85,12 +85,15 @@ body.tela-preta #preto { display: block; }
   overflow-y: auto;
   padding: 28px;
   background: rgba(8, 8, 10, 0.96);
+}
+#grade[hidden] { display: none; }
+
+/* A grade fica num bloco interno sem altura fixa, para as linhas nunca se comprimirem. */
+#grade-lista {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: 18px;
-  align-content: start;
 }
-#grade[hidden] { display: none; }
 
 .miniatura {
   position: relative;
@@ -105,6 +108,7 @@ body.tela-preta #preto { display: block; }
   overflow: hidden;
   outline: 2px solid rgba(255, 255, 255, 0.12);
   outline-offset: 0;
+  width: 100%;
   aspect-ratio: var(--proporcao, 16 / 9);
 }
 .miniatura img, .miniatura video {

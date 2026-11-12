@@ -85,7 +85,7 @@ Edite `player.config.json` e rode `npm run build` de novo.
 ```json
 {
   "titulo": "Meu Canva",
-  "transicaoMs": 300,
+  "transicaoMs": 600,
   "laser": true,
   "laserOcultarMs": 2000,
   "contador": false,

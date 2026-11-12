@@ -3,7 +3,7 @@
 
   var padrao = {
     titulo: 'Meu Canva',
-    transicaoMs: 300,
+    transicaoMs: 600,
     laser: true,
     laserOcultarMs: 2000,
     contador: false,
@@ -17,6 +17,7 @@
   var elContador = document.getElementById('contador');
   var elAjuda = document.getElementById('ajuda');
   var elGrade = document.getElementById('grade');
+  var elLista = document.getElementById('grade-lista');
 
   document.title = cfg.titulo || padrao.titulo;
 
@@ -138,7 +139,7 @@
     el.style.zIndex = '2';
     if (anterior) anterior.style.zIndex = '1';
     void el.offsetWidth;
-    el.style.transition = ms ? 'opacity ' + ms + 'ms ease' : 'none';
+    el.style.transition = ms ? 'opacity ' + ms + 'ms ease-in-out' : 'none';
     el.style.opacity = '1';
     if (!telaPreta && !gradeAberta) tocar(el, i);
 
@@ -218,13 +219,13 @@
       rotulo.textContent = s.video ? (i + 1) + ' ▶' : String(i + 1);
       b.appendChild(m);
       b.appendChild(rotulo);
-      elGrade.appendChild(b);
+      elLista.appendChild(b);
     });
   }
 
   function selecionar(i) {
     selecionado = Math.min(slides.length - 1, Math.max(0, i));
-    var itens = elGrade.children;
+    var itens = elLista.children;
     for (var k = 0; k < itens.length; k++) {
       itens[k].classList.toggle('selecionada', k === selecionado);
       itens[k].classList.toggle('atual', k === atual);
@@ -233,7 +234,7 @@
   }
 
   function colunasDaGrade() {
-    var itens = elGrade.children;
+    var itens = elLista.children;
     var n = 1;
     while (n < itens.length && itens[n].offsetTop === itens[0].offsetTop) n++;
     return n;

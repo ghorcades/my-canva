@@ -18,7 +18,7 @@ const VIDEOS = new Set(['.mp4', '.m4v', '.webm']);
 
 const PADRAO = {
   titulo: 'Meu Canva',
-  transicaoMs: 300,
+  transicaoMs: 600,
   laser: true,
   laserOcultarMs: 2000,
   contador: false,
