@@ -57,8 +57,8 @@ Para levar a outro computador, copie a pasta `dist/` inteira (pen drive, por exe
 
 | Tecla | Ação |
 | --- | --- |
-| `→` `↓` `Espaço` `PageDown` `Enter`, clique | Próxima página |
-| `←` `↑` `PageUp` `Backspace`, clique direito | Página anterior |
+| `→` `↓` `Espaço` `PageDown` `Enter`, clique na metade direita da tela | Próxima página |
+| `←` `↑` `PageUp` `Backspace`, clique na metade esquerda da tela (ou clique direito) | Página anterior |
 | `Home` / `End` | Primeira / última página |
 | número + `Enter` | Pular para a página |
 | `G` | Grade com todos os slides, para escolher um |

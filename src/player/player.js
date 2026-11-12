@@ -426,7 +426,10 @@
       return;
     }
     if (telaPreta) { definirTelaPreta(false); return; }
-    if (e.button === 0) proximo();
+    if (e.button !== 0) return;
+    // Metade direita da tela avança, metade esquerda volta.
+    if (e.clientX < window.innerWidth / 2) anterior();
+    else proximo();
   }
 
   document.addEventListener('keydown', aoTeclar);
