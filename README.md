@@ -61,18 +61,21 @@ Para levar a outro computador, copie a pasta `dist/` inteira (pen drive, por exe
 | `←` `↑` `PageUp` `Backspace`, clique direito | Página anterior |
 | `Home` / `End` | Primeira / última página |
 | número + `Enter` | Pular para a página |
+| `G` | Grade com todos os slides, para escolher um |
 | `F` | Tela cheia |
 | `B` ou `.` | Tela preta |
 | `L` | Liga/desliga o ponteiro laser |
 | `N` | Mostra/esconde o contador de página |
 | `H` | Mostra os atalhos |
-| `Esc` | Sai da tela cheia, da tela preta ou da ajuda |
+| `Esc` | Sai da tela cheia, da tela preta, da grade ou da ajuda |
 
 Passadores de slide funcionam, porque enviam `PageUp`/`PageDown`.
 
 Com a tela preta ligada, a primeira tecla de navegação só traz o slide de volta, sem trocar de página.
 
-**Ponteiro laser:** ao mexer o mouse, um ponto vermelho aparece no lugar do cursor e some depois de 2 segundos parado.
+**Grade de slides:** `G` abre uma grade com miniaturas de todas as páginas. Clique em uma, ou escolha com as setas e confirme com `Enter`. `Esc` ou `G` fecha sem trocar de página.
+
+**Ponteiro laser:** ao mexer o mouse, um ponto azul discreto aparece no lugar do cursor e some depois de 2 segundos parado. Funciona também sobre os vídeos.
 Com o laser desligado (`L`), aparece o cursor normal, que também some quando o mouse para.
 
 ## Configuração

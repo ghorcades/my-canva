@@ -16,6 +16,7 @@
   var elLaser = document.getElementById('laser');
   var elContador = document.getElementById('contador');
   var elAjuda = document.getElementById('ajuda');
+  var elGrade = document.getElementById('grade');
 
   document.title = cfg.titulo || padrao.titulo;
 
@@ -35,6 +36,9 @@
   var timerDigitos = 0;
   var timerParado = 0;
   var semSom = null;             // vídeo que o navegador obrigou a tocar mudo
+  var gradeAberta = false;
+  var gradePronta = false;
+  var selecionado = 0;
 
   // ---------- Slides ----------
 
@@ -92,7 +96,7 @@
         // Sem interação prévia o Chrome só deixa tocar mudo; o som volta na próxima tecla ou clique.
         // Qualquer outra rejeição (um pause() no meio do caminho, por exemplo) não deve religar o vídeo.
         if (!erro || erro.name !== 'NotAllowedError') return;
-        if (v.muted || telaPreta || pool.get(atual) !== el) return;
+        if (v.muted || telaPreta || gradeAberta || pool.get(atual) !== el) return;
         v.muted = true;
         semSom = v;
         v.play().catch(function () {});
@@ -136,7 +140,7 @@
     void el.offsetWidth;
     el.style.transition = ms ? 'opacity ' + ms + 'ms ease' : 'none';
     el.style.opacity = '1';
-    if (!telaPreta) tocar(el, i);
+    if (!telaPreta && !gradeAberta) tocar(el, i);
 
     // Mantém carregados só o atual e os dois vizinhos.
     var vizinhos = [i - 1, i + 1].map(function (j) {
@@ -179,7 +183,82 @@
     var el = pool.get(atual);
     if (!el) return;
     if (ligar) pausar(el);
-    else if (midia(el).tagName === 'VIDEO') midia(el).play().catch(function () {});
+    else if (!gradeAberta) retomar(el);
+  }
+
+  function retomar(el) {
+    if (midia(el).tagName === 'VIDEO') midia(el).play().catch(function () {});
+  }
+
+  // ---------- Grade com todos os slides ----------
+
+  function construirGrade() {
+    gradePronta = true;
+    var ref = slides.filter(function (s) { return s.largura && s.altura; })[0];
+    if (ref) elGrade.style.setProperty('--proporcao', ref.largura + ' / ' + ref.altura);
+    slides.forEach(function (s, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'miniatura';
+      b.dataset.i = i;
+      var m;
+      if (s.imagem) {
+        m = new Image();
+        m.loading = 'lazy';
+        m.decoding = 'async';
+        m.alt = '';
+        m.src = s.imagem;
+      } else {
+        m = document.createElement('video');
+        m.muted = true;
+        m.preload = 'metadata';
+        m.src = s.video + '#t=0.1';
+      }
+      var rotulo = document.createElement('span');
+      rotulo.textContent = s.video ? (i + 1) + ' ▶' : String(i + 1);
+      b.appendChild(m);
+      b.appendChild(rotulo);
+      elGrade.appendChild(b);
+    });
+  }
+
+  function selecionar(i) {
+    selecionado = Math.min(slides.length - 1, Math.max(0, i));
+    var itens = elGrade.children;
+    for (var k = 0; k < itens.length; k++) {
+      itens[k].classList.toggle('selecionada', k === selecionado);
+      itens[k].classList.toggle('atual', k === atual);
+    }
+    itens[selecionado].scrollIntoView({ block: 'nearest' });
+  }
+
+  function colunasDaGrade() {
+    var itens = elGrade.children;
+    var n = 1;
+    while (n < itens.length && itens[n].offsetTop === itens[0].offsetTop) n++;
+    return n;
+  }
+
+  function abrirGrade() {
+    if (!gradePronta) construirGrade();
+    gradeAberta = true;
+    definirTelaPreta(false);
+    elGrade.hidden = false;
+    document.body.classList.remove('sem-cursor');
+    elLaser.classList.remove('visivel');
+    clearTimeout(timerParado);
+    var el = pool.get(atual);
+    if (el) pausar(el);
+    selecionar(atual);
+  }
+
+  function fecharGrade(destino) {
+    if (!gradeAberta) return;
+    gradeAberta = false;
+    elGrade.hidden = true;
+    aplicarCursor(true);
+    if (destino >= 0 && destino !== atual) mostrar(destino);
+    else if (pool.get(atual)) retomar(pool.get(atual));
   }
 
   function alternarTelaCheia() {
@@ -220,7 +299,7 @@
   }
 
   function aoMoverMouse(e) {
-    if (e.movementX === 0 && e.movementY === 0) return;
+    if (gradeAberta || (e.movementX === 0 && e.movementY === 0)) return;
     if (laserLigado) {
       elLaser.style.transform = 'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0)';
       elLaser.classList.add('visivel');
@@ -264,7 +343,8 @@
         var alvo = Math.min(slides.length, Math.max(1, parseInt(digitos, 10)));
         limparDigitos();
         definirTelaPreta(false);
-        mostrar(alvo - 1);
+        if (gradeAberta) fecharGrade(alvo - 1);
+        else mostrar(alvo - 1);
         return;
       }
       if (k === 'Backspace') {
@@ -275,6 +355,18 @@
       }
       limparDigitos();
       if (k === 'Escape') { e.preventDefault(); return; }
+    }
+
+    if (gradeAberta) {
+      var passo = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: colunasDaGrade(), ArrowUp: -colunasDaGrade(),
+        PageDown: 1, PageUp: -1 }[k];
+      if (passo) { e.preventDefault(); selecionar(selecionado + passo); }
+      else if (k === 'Home') { e.preventDefault(); selecionar(0); }
+      else if (k === 'End') { e.preventDefault(); selecionar(slides.length - 1); }
+      else if (k === 'Enter' || k === ' ' || k === 'Spacebar') { e.preventDefault(); fecharGrade(selecionado); }
+      else if (k === 'Escape' || k === 'g' || k === 'G') { e.preventDefault(); fecharGrade(-1); }
+      else if (k === 'f' || k === 'F') { e.preventDefault(); alternarTelaCheia(); }
+      return;
     }
 
     var avancar = k === 'ArrowRight' || k === 'ArrowDown' || k === ' ' || k === 'Spacebar' ||
@@ -309,6 +401,10 @@
         aplicarCursor(false);
         armarOcultar();
         break;
+      case 'g': case 'G':
+        e.preventDefault();
+        abrirGrade();
+        break;
       case 'n': case 'N':
         contadorLigado = !contadorLigado;
         atualizarContador();
@@ -323,6 +419,11 @@
     liberarSom();
     if (digitos) limparDigitos();
     if (!elAjuda.hidden) { elAjuda.hidden = true; return; }
+    if (gradeAberta) {
+      var mini = e.target.closest ? e.target.closest('.miniatura') : null;
+      fecharGrade(mini ? Number(mini.dataset.i) : -1);
+      return;
+    }
     if (telaPreta) { definirTelaPreta(false); return; }
     if (e.button === 0) proximo();
   }
@@ -334,6 +435,7 @@
     liberarSom();
     if (digitos) limparDigitos();
     if (!elAjuda.hidden) { elAjuda.hidden = true; return; }
+    if (gradeAberta) return;
     if (telaPreta) { definirTelaPreta(false); return; }
     anterior();
   });
