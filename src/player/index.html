@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Meu Canva</title>
+  <link rel="stylesheet" href="player.css">
+</head>
+<body>
+  <div id="palco"></div>
+  <div id="preto"></div>
+  <div id="laser"></div>
+  <div id="contador"></div>
+
+  <div id="ajuda" hidden>
+    <h1>Atalhos</h1>
+    <dl>
+      <dt>→ ↓ Espaço PageDown Enter · clique</dt><dd>Próxima página</dd>
+      <dt>← ↑ PageUp Backspace · clique direito</dt><dd>Página anterior</dd>
+      <dt>Home / End</dt><dd>Primeira / última página</dd>
+      <dt>Número + Enter</dt><dd>Pular para a página</dd>
+      <dt>F</dt><dd>Tela cheia</dd>
+      <dt>B ou .</dt><dd>Tela preta</dd>
+      <dt>L</dt><dd>Ponteiro laser</dd>
+      <dt>N</dt><dd>Contador de página</dd>
+      <dt>H</dt><dd>Esta ajuda</dd>
+      <dt>Esc</dt><dd>Sair da tela cheia, da tela preta ou da ajuda</dd>
+    </dl>
+  </div>
+
+  <div id="vazio" hidden>
+    <h1>Nenhuma página encontrada</h1>
+    <p>Coloque os PNGs exportados do Canva (ou o ZIP) na pasta <code>input/</code>,
+      rode <code>npm run build</code> e abra <code>dist/index.html</code>.</p>
+  </div>
+
+  <script src="slides.js"></script>
+  <script src="player.js"></script>
+</body>
+</html>

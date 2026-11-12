@@ -1,0 +1,13 @@
+{
+  "name": "meu-canva",
+  "version": "1.0.0",
+  "description": "Player offline de apresentações exportadas do Canva para telões de LED de qualquer proporção",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

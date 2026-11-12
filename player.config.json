@@ -1,0 +1,9 @@
+{
+  "titulo": "Meu Canva",
+  "transicaoMs": 300,
+  "laser": true,
+  "laserOcultarMs": 2000,
+  "contador": false,
+  "loop": false,
+  "paginas": {}
+}
